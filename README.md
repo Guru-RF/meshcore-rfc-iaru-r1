@@ -147,19 +147,14 @@ This is a deliberately long-range, low-rate, narrow profile (see the bandwidth t
 
 The proposed 430.500 MHz centre frequency is deliberately chosen to avoid existing 70 cm FM repeater input and output channels.
 
-Examples of existing Belgian 70 cm repeaters and nearby unmanned stations to take into account:
+Examples:
 
-- ON0BXL
-- ON0VDS
-- ON0ORA
-- ON0AND
-- ON0OST
-- ON0UHF
-- ON0VHF
+- **ON0GEN:** 430.03750 MHz
+- **ON0CLR:** 430.07500 MHz
 
-Where these stations have 70 cm allocations, they fall in the usual repeater segments — the 430.025–430.375 MHz output block and the 438–439 MHz repeater region — both well clear of 430.500 MHz. (Several are multi-band stations with additional allocations on other bands; those do not affect this proposal.)
+A 430.500 MHz LoRa signal with 62.5 kHz bandwidth would remain hundreds of kilohertz away from these existing FM repeater outputs.
 
-A 430.500 MHz LoRa signal with 62.5 kHz bandwidth (≈ 430.46875–430.53125 MHz) therefore remains hundreds of kilohertz to several megahertz away from any of these repeater outputs. The lower edge of the channel, ≈ 430.46875 MHz, is still well above the 430.025–430.375 MHz repeater-output block.
+The lower edge of a 62.5 kHz signal centred on 430.500 MHz is approximately 430.46875 MHz, which is still well above the 430.025–430.375 MHz repeater-output block.
 
 This proposal therefore aims to avoid both:
 
