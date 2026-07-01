@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Draft version** | 0.1 |
+| **Draft version** | 0.2 |
 | **Prepared by** | Joeri Van Dooren, ON6URE / RF.Guru |
 | **Intended audience** | Belgian repeater managers, unmanned-station coordinators, amateur radio associations, and technical working groups |
 | **Status** | Request for comments |
@@ -82,7 +82,7 @@ LoRa channel bandwidth (commonly 62.5, 125, 250, or 500 kHz) is a deliberate tra
 
 So the choice balances airtime (favours wider) against spectrum footprint and range (favour narrower).
 
-This RFC adopts MeshCore's **stock Europe profile, which uses 62.5 kHz** (see [Section 5.1](#51-on-air-radio-settings-the-testable-mode)). That deliberately favours range, weak-signal performance, and a small spectrum footprint over raw speed — appropriate for a low-rate messaging and emergency-fallback layer — and it keeps every node on the same settings as the wider MeshCore ecosystem. It also fits the band plan with room to spare: 62.5 kHz centred on 430.500 MHz occupies only ≈ 430.469–430.531 MHz, comfortably inside the 175 kHz digital communication link segment (430.400–430.575 MHz), with roughly 70 kHz of guard on each side. (For comparison, a 250 kHz channel — ≈ 430.375–430.625 MHz — would not fit at all: it would spill into the NBFM repeater-output edge below and into the digital-repeater segment above.)
+This RFC adopts MeshCore's **stock Europe profile, which uses 62.5 kHz** (see [Section 5.1](#51-on-air-radio-settings-the-testable-mode)). That deliberately favours range, weak-signal performance, and a small spectrum footprint over raw speed — appropriate for a low-rate messaging and emergency-fallback layer — and it keeps every node on the same settings as the wider MeshCore ecosystem. It fits inside the 175 kHz digital communication link segment (430.400–430.575 MHz): 62.5 kHz centred on 430.475 MHz occupies only ≈ 430.444–430.506 MHz, sitting low in the segment with roughly 34 kHz of guard to the ON0TVM packet channel (430.400 MHz) below and 38 kHz to the digital repeater-input extension (430.544 MHz) above. (For comparison, a 250 kHz channel — ≈ 430.350–430.600 MHz — would not fit at all: it would spill into the NBFM repeater-output block below and across the digital repeater-input edge above.) One honest caveat remains: 62.5 kHz is wider than the 20 kHz maximum channel bandwidth the IARU R1 plan lists for this sub-band, so the channel spans roughly three nominal 20 kHz slots — a point addressed openly in [Section 12.1](#121-frequency-selection-rationale).
 
 ---
 
@@ -113,29 +113,29 @@ The proposed system is a Belgian ham-only MeshCore / LoRa digital mesh layer usi
 
 The proposed primary centre frequency is:
 
-> **430.500 MHz**
+> **430.475 MHz**
 
-With **62.5 kHz** occupied bandwidth, a 430.500 MHz centre frequency occupies approximately:
+With **62.5 kHz** occupied bandwidth, a 430.475 MHz centre frequency occupies approximately:
 
-> **430.46875 MHz to 430.53125 MHz**
+> **430.44375 MHz to 430.50625 MHz**
 
-This keeps the signal within the 430.400–430.575 MHz digital communication link segment of the IARU Region 1 70 cm band plan, with roughly 70 kHz of guard on each side, and well above the repeater output block below 430.375 MHz.
+This keeps the signal low in the 430.400–430.575 MHz digital communication **link** segment of the IARU Region 1 70 cm band plan. The centre is deliberately placed toward the bottom of that segment so that its upper edge (≈ 430.506 MHz) stays clear of the **digital repeater-input extension that begins at 430.544 MHz** (the 7.6 MHz-shift digital-repeater input, paired with 438.194–438.531 MHz outputs), while its lower edge (≈ 430.444 MHz) stays above the FM repeater-output block below 430.375 MHz and clear of the ON0TVM packet channel at 430.400 MHz. The resulting guards are roughly 38 kHz to the repeater-input edge above and 34 kHz to ON0TVM below. See [Section 12.1](#121-frequency-selection-rationale) for why 430.475 MHz was chosen over 430.500 MHz and over the other candidates that were considered.
 
 The proposed frequency also avoids the commonly used 433 MHz area, which is heavily affected by ISM/SRD devices, remote controls, sensors, weather stations, consumer LoRa devices, and uncoordinated Meshtastic-type nodes.
 
 ### 5.1 On-air radio settings (the testable mode)
 
-So that anyone can join the channel and actually decode it, the network uses a single, explicitly defined mode. It is **MeshCore's stock Europe profile with only the frequency changed to 430.500 MHz** — existing MeshCore users need only retune. All nodes must match every parameter below; a mismatch in any one of them (bandwidth, spreading factor, coding rate) means stations cannot hear each other.
+So that anyone can join the channel and actually decode it, the network uses a single, explicitly defined mode. It is **MeshCore's stock Europe profile with only the frequency changed to 430.475 MHz** — existing MeshCore users need only retune. All nodes must match every parameter below; a mismatch in any one of them (bandwidth, spreading factor, coding rate) means stations cannot hear each other.
 
 | Parameter | Value |
 | --- | --- |
 | Modulation | LoRa (Chirp Spread Spectrum) |
 | Firmware | MeshCore (companion or repeater role) |
-| Centre frequency | **430.500 MHz** |
+| Centre frequency | **430.475 MHz** |
 | Bandwidth | **62.5 kHz** |
 | Spreading factor | **SF8** |
 | Coding rate | **4/8** (shown as `8` in the MeshCore apps) |
-| Occupied bandwidth | ≈ 430.46875 – 430.53125 MHz |
+| Occupied bandwidth | ≈ 430.44375 – 430.50625 MHz |
 | TX power | MeshCore default 22 dBm (≈ 158 mW) for testing; RFC maximum **2 W** conducted at fixed sites (see [Section 9](#9-power-proposal)) |
 | Channel / key | Default **public** MeshCore channel with its published shared key — do **not** configure private/secret keys (no encryption for amateur traffic — see [Section 11](#11-technical-requirements-for-participating-repeaters)) |
 
@@ -145,21 +145,23 @@ This is a deliberately long-range, low-rate, narrow profile (see the bandwidth t
 
 ## 6. Compatibility with existing 70 cm repeaters
 
-The proposed 430.500 MHz centre frequency is deliberately chosen to avoid existing 70 cm FM repeater input and output channels.
+The proposed 430.475 MHz centre frequency is deliberately chosen to avoid existing 70 cm FM and digital repeater input and output channels, and the point-to-point digital-link and packet channels around it.
 
-Examples:
+Nearby fixed stations and band-plan edges (from the ON0 unmanned-station database and the IARU R1 / UBA 70 cm plan):
 
-- **ON0GEN:** 430.03750 MHz
-- **ON0CLR:** 430.07500 MHz
+- **FM repeater-output block:** 430.025–430.375 MHz — ≈ 69 kHz below the channel's lower edge
+- **ON0TVM:** 430.40000 MHz (packet) — ≈ 34 kHz below the channel's lower edge
+- **Digital repeater-input extension (7.6 MHz shift):** from 430.544 MHz — ≈ 38 kHz above the channel's upper edge
+- **ON0SEA:** 430.57500 MHz (packet) — ≈ 59 kHz above the channel's upper edge
 
-A 430.500 MHz LoRa signal with 62.5 kHz bandwidth would remain hundreds of kilohertz away from these existing FM repeater outputs.
-
-The lower edge of a 62.5 kHz signal centred on 430.500 MHz is approximately 430.46875 MHz, which is still well above the 430.025–430.375 MHz repeater-output block.
+A 430.475 MHz LoRa signal with 62.5 kHz bandwidth occupies ≈ 430.444–430.506 MHz. Its lower edge stays well above the 430.025–430.375 MHz repeater-output block, and — importantly — its upper edge stays below the 430.544 MHz digital repeater-input edge, so the channel does not crowd the repeater-input side of the band. That was the concern that prompted moving down from the original 430.500 MHz proposal; the reasoning is recorded in [Section 12.1](#121-frequency-selection-rationale).
 
 This proposal therefore aims to avoid both:
 
-- direct channel overlap with existing repeaters;
+- direct channel overlap with existing repeaters, links, and packet stations;
 - future claims that MeshCore activity has occupied repeater input or output channels.
+
+Where a MeshCore node is installed at an existing repeater site, co-location filtering is addressed in [Section 11.1](#111-co-siting-at-existing-repeater-sites).
 
 ---
 
@@ -241,6 +243,8 @@ A repeater running 1 W into a high-gain antenna from a good site may already out
 - site locator;
 - responsible callsign/contact.
 
+**Antenna gain — a modest (≈ 0 dBd) omni is often the better default.** A high-gain collinear is not automatically the right choice for a fixed node. From a high site — which repeater masts usually are — a high-gain antenna concentrates energy at the horizon and can overshoot nearby users, leaving a coverage hole below it; a roughly unity-gain omni (≈ 0 dBd, i.e. ~2.15 dBi) has a rounder pattern that fills in local and valley coverage and often works better in practice from a tall mast. Modest gain also keeps ERP modest, which suits a low-impact mesh node. So ≈ 0 dBd is a reasonable default for most fixed nodes, with higher gain justified by a specific coverage need and its ERP documented above. One caveat: antenna gain is _not_ a co-site desensitisation control (see [Section 11.1](#111-co-siting-at-existing-repeater-sites)) — on a vertically-stacked mast a low-gain antenna can couple _more_ energy into a neighbouring receiver than a high-gain collinear (whose pattern nulls point up and down), so co-site isolation comes from antenna separation, filtering and conducted power, not from reducing gain.
+
 ### 9.4 Recommended principle
 
 > **Use the lowest power that provides reliable coverage.**
@@ -281,6 +285,38 @@ Participating fixed repeater or backbone nodes should meet the following minimum
 11. Willingness to reduce power or change configuration if interference is reported.
 12. Registration of the node and its responsible operator on the overarching unmanned-station platform — see [Section 13](#13-coordination-proposal) and <https://on0.be>.
 
+### 11.1 Co-siting at existing repeater sites
+
+Where a MeshCore node is installed on the same mast or site as an existing repeater, the node's transmitter can degrade the repeater's receiver (and, less often, the reverse). Coordinating the frequency is the first line of defence — 430.475 MHz is deliberately placed as far from the digital repeater-input edge as the segment allows (see [Section 12.1](#121-frequency-selection-rationale)) — but at a shared site additional filtering is usually still needed. Two **distinct** mechanisms are involved, and they need **different** fixes:
+
+1. **Transmitter noise falling in the repeater's passband.** Every transmitter emits low-level wideband noise on either side of its carrier. Any of that noise landing on the repeater's _receive_ frequency is indistinguishable from a wanted signal there and **cannot be removed by any filter at the repeater**. It must be cleaned at the source — with a band-pass cavity / filter on the MeshCore transmitter output, and by using a clean PA that is not overdriven. This is why transmitter cleanliness matters more than raw power.
+2. **Receiver blocking / desensitisation.** The strong nearby MeshCore _carrier_ itself (off the repeater's frequency) can overload the repeater's front-end and raise its noise floor. This is what a **band-reject (notch) filter or a band-pass preselector at the repeater's receive input** can reduce — provided there is enough frequency separation for the filter's skirts.
+
+A notch filter in the repeater's RX chain therefore addresses **mechanism 2 only**. It is a useful and often necessary component, but on its own it is **not a complete answer**, because it does nothing about mechanism 1 (you cannot notch out energy sitting on your own wanted frequency). The robust approach is layered, roughly in order of effectiveness and cost:
+
+- **Antenna separation** (especially vertical spacing) — usually the cheapest large amount of isolation;
+- a **band-pass filter / cavity on the MeshCore transmitter output** — kills transmitter wideband noise in the repeater's receive passband (mechanism 1);
+- a **band-pass preselector on the repeater receiver** — rejects the off-channel MeshCore carrier and other on-site signals broadly (mechanism 2);
+- a **notch tuned to the MeshCore channel** — a targeted supplement to the preselector when one specific carrier dominates;
+- the node's inherently **low power (1–2 W) and low duty cycle**, which already limit the severity.
+
+The further the MeshCore channel sits from the co-located repeater's input, the wider the filter skirts can be and the cheaper every one of these measures becomes — a further reason for the low-in-segment channel choice. Each co-located installation should document its co-siting arrangement (antenna separation, TX filtering, RX filtering) alongside the technical parameters required in [Section 9.3](#93-erpeirp-consideration) and the list above.
+
+**Practical guidance by offset from the repeater input.** Because the node runs only **1 W (≈ +30 dBm)**, co-siting is far easier than for a normal high-power repeater — but the receive-side numbers still bite. With typical on-mast antenna isolation of 40–60 dB (vertical separation helps most), the node's carrier still arrives at roughly −10 to −20 dBm at the repeater's front end — more than enough to desensitise a sensitive receiver. The aim is to add enough rejection to bring that carrier down to about −40 dBm or lower at the receiver input; a cavity notch tuned to the node frequency supplies it, **provided the offset Δf between the node channel and the repeater input is large enough for the notch skirts to clear the wanted signal.** As a rough rule of thumb (always measure on site):
+
+| Offset Δf (node channel ↔ repeater input) | Same-site outlook at 1 W |
+| --- | --- |
+| **< ~0.1 MHz** | Very difficult. A notch deep enough to protect the input would also attenuate the wanted receive signal. Not recommended on a shared antenna system — use large vertical antenna separation, a separate site, or avoid co-siting with an input this close. |
+| **~0.1–0.5 MHz** | Feasible but demanding: needs one or two **high-Q cavity notches** at the node frequency on the repeater RX line, good antenna separation, and a clean / band-pass-filtered node TX. Tune and measure. |
+| **~0.5–2 MHz** | Comfortable: a single good **cavity notch** at the node frequency on the repeater RX, plus antenna separation, is normally enough. |
+| **> ~2 MHz** | Usually fine: the repeater's existing duplexer / front-end and antenna separation generally suffice; just keep the node TX clean. |
+
+For the proposed 430.475 MHz channel on a shared site, the closest input you would realistically meet is a **digital repeater input at 430.544–430.925 MHz** (Δf ≈ 0.07–0.45 MHz — the hard end of the table, needing high-Q cavity notching or better antenna separation), whereas the **FM/DV repeater inputs at 431.050–431.975 MHz** (Δf ≈ 0.58–1.5 MHz) fall in the comfortable range. Note the notch protects only against receiver **blocking**; the node's own transmitter **noise** landing on the repeater's input frequency cannot be notched at the repeater and must be handled by the band-pass filter on the node TX (mechanism 1 above) — which is itself least effective at very small Δf, another reason the sub-0.1 MHz case is best avoided.
+
+**Turning the node's power down is often the simplest fix — and the only one that also cures TX noise.** Every dB of node output removed reduces both the blocking carrier and the transmitter noise reaching the repeater by the same dB, so dropping a co-sited node from 1 W to, say, 100 mW (−10 dB) or 10 mW (−20 dB) can do more, more cheaply, than a cavity — and it is the only measure that also helps the un-notchable TX-noise path (mechanism 1). Because a MeshCore relay's coverage comes mainly from siting and antenna height rather than raw power (see [Section 9](#9-power-proposal)), a node on a good repeater mast can usually afford to run low power and still cover well. At shared sites, therefore, use the lowest power that still gives reliable mesh coverage — a co-located node will often need far less than the general 1–2 W.
+
+**Spreading is not a substitute for this.** It is tempting to assume LoRa's chirp spreading makes the node harmless: its 1 W is smeared across 62.5 kHz, so its power spectral density is low, and a narrowband repeater receiver only catches the fraction of that energy that falls in its own passband (a 12 kHz FM receiver sees roughly a fifth — about 7 dB less — of overlapping in-band energy than it would from an equal-power narrowband source). That genuinely makes the node a gentler co-channel / adjacent-channel neighbour, and — together with LoRa's processing gain — it also makes the node itself far more tolerant of a noisy band (see [Section 3.2](#32-processing-gain--hearing-below-the-noise) and [Section 3.3](#33-why-a-single-shared-frequency-rarely-collapses)). But spreading does **not** reduce front-end **blocking / desensitisation**: a receiver's front end is wideband and sees the node's _total_ carrier power regardless of how it is spread, so the −10 to −20 dBm figures above are unchanged by the spreading factor. Blocking is defeated only by frequency separation, filtering, antenna isolation and lower power — not by spreading.
+
 ---
 
 ## 12. Proposed initial frequency plan
@@ -289,22 +325,45 @@ Initial proposal:
 
 | Use | Centre frequency | Bandwidth | Notes |
 | --- | --- | --- | --- |
-| Primary Belgian ham-only MeshCore channel | **430.500 MHz** | 62.5 kHz | Preferred starting point |
-| Alternative test channel | 430.450 MHz | 62.5 kHz | Only if primary is not usable locally |
-| Alternative test channel | 430.525 MHz | 62.5 kHz | Only if primary is not usable locally |
+| Primary Belgian ham-only MeshCore channel | **430.475 MHz** | 62.5 kHz | Preferred starting point; low in the 430.400–430.575 digital-link segment |
+| Alternative test channel | 430.4875 MHz | 62.5 kHz | Only if primary is not usable locally; slightly higher, smaller guard to the 430.544 MHz input edge |
 
 **Frequencies to avoid for this project:**
 
 | Range / frequency | Reason |
 | --- | --- |
-| 430.025–430.375 MHz | Existing repeater output planning |
-| 431.625–431.975 MHz | Existing repeater input planning |
-| 433.000–433.375 MHz | Repeater input planning in Region 1 context |
-| 433.500 MHz | FM calling frequency |
-| 433.450 MHz | Digital voice calling / activity area |
-| 433.775 MHz | European LoRa-APRS standard frequency (iGates, trackers, APRS messaging) |
-| 434.600–434.975 MHz | Repeater output planning |
+| 430.025–430.375 MHz | FM repeater-output block (1.6 MHz-shift system) |
+| 430.544–430.931 MHz | Digital repeater-input extension (7.6 MHz-shift system; outputs 438.194–438.531 MHz) |
+| 431.050–431.825 MHz | FM/DV repeater inputs (7.6 MHz-shift system) |
+| 431.625–431.975 MHz | FM repeater inputs (1.6 MHz-shift system) |
+| 432.000–432.400 MHz | Narrow-band weak-signal segment (CW / SSB / EME / MGM) — do not put wideband data here |
+| 432.400–432.490 MHz | Beacons (exclusive) |
+| 432.500 MHz | APRS |
+| 433.000–433.375 MHz | Repeater inputs (Region 1 standard) |
+| 433.050–434.790 MHz | 70 cm ISM / LPD433 band — the licence-free spectrum this project exists to leave (includes 433.450 DV calling, 433.500 FM calling, 433.775 LoRa-APRS, and the 434.450 MHz digital sub-band) |
+| 434.600–434.975 MHz | Repeater outputs |
 | 435.000–438.000 MHz | Amateur satellite segment |
+| 438.650–439.425 MHz | FM/DV repeater outputs (7.6 MHz-shift system) |
+| 439.800–439.975 MHz | Digital-link channels, but already occupied (ON0BAF / ON0AN / ON0ANR) and immediately below the DAPNET paging transmitter |
+| 439.9875 MHz | DAPNET / POCSAG paging (high-power, high-duty, transmit-only) |
+
+### 12.1 Frequency selection rationale
+
+The primary channel was refined from **430.500 MHz** (draft 0.1) to **430.475 MHz** (draft 0.2) after review comments that 430.500 MHz sits too close to the repeater-input side of the band, together with suggestions to weigh other placements — notably 434.450 MHz and the region above the repeater outputs. This section records why 430.475 MHz was chosen and why each alternative was set aside, so the trade-offs are on the record for further comment.
+
+**The constraint.** In the lower 70 cm band the only segment designated for coordinated point-to-point / mesh _digital-link_ traffic that is not a repeater input, a repeater output, a beacon, a weak-signal (CW/SSB/EME) segment, the satellite segment, or licence-free ISM spectrum is the **430.400–430.575 MHz digital communication link segment**. That is the natural and defensible home for this channel. The segment is only 175 kHz wide, its maximum channel bandwidth is 20 kHz, and it is bracketed by two existing packet stations — **ON0TVM (430.400 MHz)** at the bottom and **ON0SEA (430.575 MHz)** at the top — with the **7.6 MHz-shift digital repeater-input extension beginning at 430.544 MHz** just above it.
+
+**Why 430.475 MHz.** Centred at 430.475 MHz the 62.5 kHz channel occupies ≈ 430.444–430.506 MHz — the "maximin" position on the 12.5 kHz raster, i.e. the centre that maximises the smaller of its two guards inside the clear interior of the segment: ≈ 34 kHz to ON0TVM below and ≈ 38 kHz to the 430.544 MHz repeater-input edge above. It stays entirely within the digital-link segment, clear of the repeater-output block (top 430.375 MHz, ≈ 69 kHz below) and well clear of the FM/DV repeater inputs at 431.050 MHz (≈ 544 kHz above).
+
+**Why not 430.500 MHz (draft 0.1).** Legal and workable, but skewed high in the segment: its upper edge (430.531 MHz) is only ≈ 13 kHz below the 430.544 MHz digital repeater-input edge and ≈ 34 kHz from ON0SEA, while wasting ≈ 59 kHz of unused guard on the low side. Moving down 25 kHz to 430.475 MHz roughly triples the guard to the repeater-input edge (13 → 38 kHz) at no cost. The 25 kHz shift makes little difference to raw propagation between distant stations, but it removes the "you are crowding the repeater input" objection and makes any co-site filtering easier — and it is free (same segment, same retune, same raster).
+
+**Why not 434.450 MHz.** The IARU plan does list a 434.450–434.575 MHz "digital communications" sub-band, and it is empty of ON0 stations — but that is precisely because **434.450 MHz lies inside the 433.050–434.790 MHz ISM / LPD433 band**. Placing the channel there would put it back among the licence-free remote controls, sensors, LPD handhelds and consumer LoRa / Meshtastic devices that Sections [7](#7-why-not-use-433-mhz-ismsrd) and [8](#8-why-not-use-868-mhz-ismsrd) give as the whole reason for leaving 433 MHz. It also carries a tighter 12 kHz channelisation and sits directly below the 435 MHz satellite segment. Choosing it would contradict the central argument of this RFC, so it is rejected.
+
+**Why not "above the repeater outputs" (e.g. 439.700–439.800 MHz).** This region _is_ far from every repeater input, which is attractive from a "do not desensitise anyone's receiver" standpoint. But it is a poor home in practice: (a) the designated digital-link channels there (439.800–439.975 MHz) are already occupied by ON0BAF (439.850), ON0AN (439.900) and ON0ANR (439.950), leaving no clean 62.5 kHz gap; (b) the whole area sits immediately below **DAPNET / POCSAG paging at 439.9875 MHz** — a high-power, high-duty, transmit-only network that would continuously desensitise the sensitive MeshCore receivers (the interference runs _into_ the mesh, and cannot be answered because DAPNET never listens); and (c) the spectrum just below (438.650–439.425 MHz) is the dense FM/DV repeater-output forest, so a receiver there is hammered by strong local outputs. A frequency in the undesignated gap at ≈ 439.700 MHz would fit and avoid the inputs, but it is not a designated digital segment and still self-desenses against the repeater outputs — a worse overall trade than 430.475 MHz.
+
+**Why not the weak-signal, beacon or satellite segments.** 432.000–432.400 MHz is the narrow-band CW/SSB/EME weak-signal segment and 432.400–432.490 MHz is exclusive to beacons; wideband data there would be highly disruptive and is out of the question. 435.000–438.000 MHz is the amateur-satellite segment. All are excluded.
+
+**Channelisation caveat (applies to any centre in this sub-band).** The 62.5 kHz occupied bandwidth of the MeshCore stock Europe profile is wider than the 20 kHz maximum channel bandwidth the IARU R1 plan lists for the 430.000–431.975 MHz sub-band, so the channel spans roughly three nominal 20 kHz slots. This is independent of the exact centre frequency and cannot be resolved by moving frequency — only by narrowing the channel (e.g. a ≤ 20 kHz LoRa profile) or by obtaining explicit national / sub-regional coordination for the wider occupied bandwidth. It is raised here openly so it can be settled with UBA / BIPT rather than surfacing later as a compliance objection. See open question 2 in [Section 16](#16-open-questions-for-comments).
 
 ---
 
@@ -314,13 +373,13 @@ This RFC proposes that Belgian associations and repeater managers agree on a com
 
 Coordination, registration, and maintenance of the known-node list are proposed to run through **[ON0.be](https://on0.be)**, the overarching platform for managing unmanned stations in Belgium. Using a single overarching platform keeps the node list, responsible-operator contacts, and technical parameters in one authoritative, publicly visible place.
 
-> **Initial consultation:** Rudy (ON6VDS) has already informally consulted several of our neighbouring amateur colleagues about the proposed 430.500 MHz channel, and none of them raised any objection.
+> **Initial consultation:** Rudy (ON6VDS) has already informally consulted several of our neighbouring amateur colleagues about the proposed channel in the 430.400–430.575 MHz digital-link segment (initially 430.500 MHz; now refined to 430.475 MHz — a 25 kHz move within the same segment, so the earlier consultation still holds), and none of them raised any objection.
 
 **Suggested coordination steps:**
 
 1. Circulate this RFC among repeater managers and technical coordinators.
 2. Collect objections, local conflicts, and alternative proposals.
-3. Confirm whether 430.500 MHz is acceptable as a national or semi-national starting point.
+3. Confirm whether 430.475 MHz is acceptable as a national or semi-national starting point.
 4. Define a list of known fixed nodes and responsible operators, maintained on the overarching ON0.be platform.
 5. Start with low-power test deployments.
 6. Monitor for interference or complaints.
@@ -336,7 +395,7 @@ Coordination, registration, and maintenance of the known-node list are proposed 
 
 ### 13.2 Initial test-bed nodes
 
-The following stations are planned to form the initial test bed, operating on the proposed **430.500 MHz** channel with the on-air mode defined in [Section 5.1](#51-on-air-radio-settings-the-testable-mode):
+The following stations are planned to form the initial test bed, operating on the proposed **430.475 MHz** channel with the on-air mode defined in [Section 5.1](#51-on-air-radio-settings-the-testable-mode):
 
 - ON0BXL
 - ON0VDS
@@ -407,9 +466,9 @@ Please keep Issues and Pull Requests in **English**, so the discussion stays acc
 
 Feedback is requested on the following points:
 
-1. Is 430.500 MHz acceptable as the primary Belgian ham-only MeshCore / LoRa centre frequency?
-2. Is the MeshCore Europe stock profile (62.5 kHz, SF8, CR 4/8) the right on-air mode, or should a wider/faster profile be considered?
-3. Are there known local conflicts around 430.500 MHz?
+1. Is 430.475 MHz acceptable as the primary Belgian ham-only MeshCore / LoRa centre frequency?
+2. Is the MeshCore Europe stock profile (62.5 kHz, SF8, CR 4/8) the right on-air mode? In particular, 62.5 kHz exceeds the 20 kHz maximum channel bandwidth listed for this sub-band (see [Section 12.1](#121-frequency-selection-rationale)) — should the project keep 62.5 kHz and seek coordination for the wider bandwidth, or adopt a ≤ 20 kHz LoRa profile to conform?
+3. Are there known local conflicts around 430.475 MHz?
 4. Should the normal recommended conducted RF output be 1 W, 2 W, or another value?
 5. Is 2 W conducted RF output acceptable as an upper technical limit?
 6. Should ERP/EIRP limits be defined more explicitly?
@@ -424,8 +483,8 @@ Feedback is requested on the following points:
 
 The proposed starting point is:
 
-- **430.500 MHz** centre frequency
-- **62.5 kHz** bandwidth, **SF8**, **CR 4/8** — MeshCore Europe stock profile, retuned to 430.500 MHz (see [Section 5.1](#51-on-air-radio-settings-the-testable-mode))
+- **430.475 MHz** centre frequency
+- **62.5 kHz** bandwidth, **SF8**, **CR 4/8** — MeshCore Europe stock profile, retuned to 430.475 MHz (see [Section 5.1](#51-on-air-radio-settings-the-testable-mode))
 - **1–2 W** conducted RF output recommended
 - **2 W** conducted RF output maximum when justified
 - Ham-only use
