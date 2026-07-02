@@ -260,7 +260,7 @@ Key consequences:
 
 1. **A personal amateur licence is not sufficient.** A personal amateur licence (e.g. HAREC) authorises _you_ to operate a station under your direct control. It does not, on its own, authorise an unattended automatic relay. Every fixed MeshCore repeater/relay node therefore requires a separate **unmanned-station / repeater authorisation** — in Belgium, from BIPT/IBPT — before it may operate.
 2. **The mesh is single-frequency and mesh-based.** Because MeshCore is mesh-based, every relaying node receives and re-transmits on the _same_ coordinated frequency; there is no separate input/output pair as on an FM repeater. All licensed nodes share one channel — see [Section 3](#3-how-lora-and-meshcore-work-on-the-air).
-3. **Register every licensed node.** Each authorised unmanned node and its responsible operator should be registered on the overarching ON0.be platform — see [Section 13](#13-coordination-proposal).
+3. **Register every licensed node.** Each authorised unmanned node and its responsible operator should be registered nationally, so the node list stays coordinated — see [Section 13](#13-coordination-proposal).
 4. **Attended portable/handheld nodes** operated under the direct control of a licensed amateur are not unmanned stations and fall under the normal personal licence. However, a portable node configured to relay automatically takes on repeater behaviour and should be treated accordingly.
 
 This requirement is a feature, not a burden: routing MeshCore traffic through properly licensed unmanned stations on a coordinated amateur frequency is exactly what keeps the network inside the amateur service and out of the ISM "ham trap".
@@ -282,7 +282,7 @@ Participating fixed repeater or backbone nodes should meet the following minimum
 9. Documented antenna, power, location, and responsible operator.
 10. Remote shutdown possibility for unattended stations where practical.
 11. Willingness to reduce power or change configuration if interference is reported.
-12. Registration of the node and its responsible operator on the overarching unmanned-station platform — see [Section 13](#13-coordination-proposal) and <https://on0.be>.
+12. Registration of the node and its responsible operator with the relevant national coordination — see [Section 13](#13-coordination-proposal).
 
 ### 11.1 Co-siting at existing repeater sites
 
@@ -368,7 +368,7 @@ This channel began, in drafts 0.1–0.2, as a Belgian frequency in the lower 70 
 
 This RFC proposes that IARU Region 1 national societies and repeater/unmanned-station coordinators agree on a common channel before large-scale deployment, and that the request be carried to the IARU Region 1 VHF/UHF/Microwaves Committee (C5).
 
-Coordination, registration, and maintenance of the known-node list are proposed to run through **[ON0.be](https://on0.be)**, the overarching platform for managing unmanned stations in Belgium. Using a single overarching platform keeps the node list, responsible-operator contacts, and technical parameters in one authoritative, publicly visible place.
+Coordination, registration, and maintenance of the known-node list are proposed to run per country — through each national society or its unmanned-station coordinator — keeping each country's node list, responsible-operator contacts, and technical parameters in one authoritative, publicly visible place.
 
 > **Initial consultation:** early informal consultation with neighbouring amateur colleagues (by Rudy, ON6VDS, and others) was carried out on an earlier Belgian lower-70 cm proposal. The re-scope to a Region-1 channel at 434.890 MHz supersedes it and requires fresh consultation, now at European level — see the coordination steps below.
 
@@ -378,7 +378,7 @@ Coordination, registration, and maintenance of the known-node list are proposed 
 2. Collect objections, local conflicts, and alternative proposals.
 3. **Per-country check before deployment.** Confirm no live repeater or other deployed station occupies 434.890 MHz nationally. Known conflicts to clear first: **Finland (OH3RUX)** and **Norway (LA5YR)** operate FM repeaters on 434.900 MHz — do **not** deploy there until re-coordinated. Also confirm national unmanned-station rules permit an automatic station on this frequency (some administrations restrict automatic-station output frequencies).
 4. **Petition IARU R1** to designate **434.790–435.000 MHz** (or 434.800–435.000, following the German DARC precedent) as a networked-digital / automatic-station segment — the single change that clears both the legacy repeater-output designation and the channel-width question.
-5. Define a list of known fixed nodes and responsible operators, maintained per country (in Belgium, on the overarching [ON0.be](https://on0.be) platform).
+5. Define a list of known fixed nodes and responsible operators, maintained per country by the national society or unmanned-station coordinator.
 6. Start with low-power test deployments, keeping all emission strictly below 435.000 MHz.
 7. Monitor for interference or complaints; adjust power, or fall back to 434.875 MHz, if needed.
 8. Document the final recommendation and make it publicly available.
@@ -402,7 +402,7 @@ The following Belgian stations are planned to form the initial test bed, operati
 - ON0UHF
 - ON0VHF
 
-Each will be brought up as a licensed unmanned station (see [Section 10](#10-licensing-and-unmanned-station-status)) and registered on the overarching [ON0.be](https://on0.be) platform. Results from these nodes will drive the evaluation described in [Section 13.1](#131-comment-period-and-next-steps).
+Each will be brought up as a licensed unmanned station (see [Section 10](#10-licensing-and-unmanned-station-status)) and registered with the relevant national coordination. Results from these nodes will drive the evaluation described in [Section 13.1](#131-comment-period-and-next-steps).
 
 ---
 
@@ -470,7 +470,7 @@ Feedback is requested on the following points:
 5. Is 2 W conducted RF output acceptable as an upper technical limit?
 6. Should ERP/EIRP limits be defined more explicitly?
 7. Should mobile/portable nodes use the same frequency or a separate access frequency?
-8. Should fixed repeater/backbone nodes be registered on the overarching ON0.be platform?
+8. Should fixed repeater/backbone nodes be registered through each national society / unmanned-station coordinator?
 9. Should this be proposed as a national recommendation across associations?
 10. Should a small technical working group be created to maintain the frequency and node list?
 
@@ -488,7 +488,7 @@ The proposed starting point is:
 - No encryption
 - Callsign identification required
 - Every fixed relay node licensed as an unmanned station; all nodes sharing the one coordinated, mesh-based frequency
-- Coordinated fixed nodes, registered per country (in Belgium, on the [ON0.be](https://on0.be) platform)
+- Coordinated fixed nodes, registered per country through the national society or unmanned-station coordinator
 - A coordination request to IARU R1 to designate 434.790–435.000 MHz for networked-digital / automatic-station use; a per-country check before deployment, excluding Finland and Norway until re-coordinated
 - Avoid 433 MHz and 868 MHz ISM/SRD for ham-only infrastructure
 
@@ -501,8 +501,6 @@ This approach gives radio amateurs across Region 1 a coordinated, technically de
 - **IARU Region 1 band plans (incl. 430–440 MHz / 70 cm)**
   <https://www.iaru-r1.org/reference/band-plans/>
   Direct 70 cm (UHF) band plan: <https://www.iaru-r1.org/wp-content/uploads/2021/03/UHF-Bandplan.pdf>
-- **ON0.be — overarching platform for managing unmanned stations in Belgium**
-  <https://on0.be>
 - **LoRa-APRS — project and default frequency settings (433.775 MHz, Europe)**
   <https://lora-aprs.org/>
 - **BIPT / IBPT radio amateur information**
