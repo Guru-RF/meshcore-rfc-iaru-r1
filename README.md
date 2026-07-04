@@ -507,6 +507,8 @@ This approach gives radio amateurs across Region 1 a coordinated, technically de
   <https://www.bipt.be/consumers/radio-frequencies/private-use-hobby/radioamateurs>
 - **RF.Guru technical note: "Meshtastic, MeshCore, 868 MHz, and the Ham Radio Trap"**
   <https://shop.rf.guru/pages/meshtastic-meshcore-868-mhz-and-the-ham-radio-trap>
+- **RF.Guru technical note: "Meshtastic, MeshCore, and the Legal Framework"** — why 868 MHz LoRa is SRD spectrum, not an amateur allocation, and why a callsign or a software duty-cycle limiter does not confer amateur status
+  <https://shop.rf.guru/pages/meshtastic-meshcore-and-the-legal-framework>
 - **RF.Guru technical note: "Meshtastic, MeshCore, CE Marking, and the Hardware Trap"** — CE/RED compliance of consumer LoRa hardware vs amateur use
   <https://shop.rf.guru/pages/meshtastic-meshcore-ce-marking-and-the-hardware-trap>
 - **IARU Region 1 VHF/UHF/Microwaves Committee (C5) and VHF Managers Handbook**
