@@ -3,7 +3,7 @@
 | | |
 | --- | --- |
 | **Draft version** | 0.3 |
-| **Prepared by** | Joeri Van Dooren, ON6URE / RF.Guru |
+| **Prepared by** | Joeri Van Dooren, [ON6URE](https://on6ure.be) / [RF.Guru](https://rf.guru) |
 | **Intended audience** | IARU Region 1 national societies and their VHF/UHF managers, the IARU R1 VHF/UHF/Microwaves Committee (C5), repeater and unmanned-station coordinators, and technical working groups |
 | **Status** | Request for comments |
 | **Comment period** | 60 days from publication of this draft (via [GitHub Issues](https://github.com/Guru-RF/meshcore-rfc-be/issues)), to allow circulation to IARU Region 1 national societies and their VHF managers |
@@ -451,7 +451,7 @@ Specific wording changes can be proposed in either of two ways:
 
 **What is a Pull Request?** A PR is GitHub's mechanism for proposing an exact edit to a document. In short: you make your own copy of the file (a "fork" or branch), change the text there, and then open a PR. The PR shows your proposed change side-by-side against the current text as a **diff** — added lines in green, removed lines in red — so everyone can see precisely what you are suggesting. The maintainer can review it, discuss it, ask for adjustments, and finally **merge** (accept) it or decline it. Nothing in the official document changes until a PR is merged, so it is a safe, transparent, fully reviewable way to suggest concrete wording. GitHub even lets you do all of this in the browser, with no special software installed.
 
-If GitHub is unfamiliar to you, do not let that stop you: send your comment by your usual channel to ON6URE / RF.Guru and it will be entered into the tracker on your behalf.
+If GitHub is unfamiliar to you, do not let that stop you: send your comment by your usual channel to [ON6URE](https://on6ure.be) / RF.Guru and it will be entered into the tracker on your behalf.
 
 ### 15.3 Language
 
