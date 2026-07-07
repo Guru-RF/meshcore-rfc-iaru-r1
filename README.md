@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Draft version** | 0.3 |
+| **Draft version** | 0.4 (revised after ON7BPS technical review) |
 | **Prepared by** | Joeri Van Dooren, [ON6URE](https://on6ure.be) / [RF.Guru](https://rf.guru) |
 | **Intended audience** | IARU Region 1 national societies and their VHF/UHF managers, the IARU R1 VHF/UHF/Microwaves Committee (C5), repeater and unmanned-station coordinators, and technical working groups |
 | **Status** | Request for comments |
@@ -67,7 +67,9 @@ A MeshCore network runs on **one frequency**, shared by every node. Newcomers of
 4. **Short, infrequent packets.** Messaging traffic is small and bursty. Airtime per packet is short and idle time is long, so the chance of two nodes keying at the exact same instant is low.
 5. **Polite protocol behaviour.** MeshCore uses managed flooding with hop limits, randomised transmit delays, duplicate suppression, and — where the hardware supports it — listen-before-talk via Channel Activity Detection (CAD). This spaces transmissions out and prevents retransmission storms.
 
-This is **not** collision-free. Very high traffic, very many nodes, or everyone crowding onto the same spreading factor can still cause congestion. That is exactly why power, duty cycle, node density, and coordination matter — see [Section 9](#9-power-proposal) and [Section 12](#12-proposed-initial-frequency-plan).
+This is **not** collision-free. Very high traffic, very many nodes, or everyone crowding onto the same spreading factor can still cause congestion. That is exactly why node density and coordination — especially of the relaying nodes, which multiply every packet across the mesh — matter, see [Section 9](#9-power-proposal) and [Section 12](#12-proposed-initial-frequency-plan). Airtime itself needs no imposed duty-cycle limit: unlike ISM/SRD, the amateur service sets none, the protocol's own politeness (point 5 above) already holds transmissions apart, and a saturated shared channel self-limits as it simply becomes unusable and traffic backs off.
+
+A shared channel is, in the end, a **common resource**: it works only while everyone draws on it responsibly. Uncoordinated relays — and a race to ever-higher power — are the classic route to a _tragedy of the commons_, where each node behaving rationally for itself degrades the channel for all. The remedy is not a heavy central rulebook but light coordination plus a shared norm of restraint: one agreed frequency, registered relays, and no more power than a node actually needs (see [RF.Guru, "The Tragedy of the Commons"](https://shop.rf.guru/pages/tragedy-of-the-commons) and [Section 13](#13-coordination-proposal)).
 
 ### 3.4 What a MeshCore "repeater" actually is
 
@@ -141,7 +143,7 @@ So that anyone can join the channel and actually decode it, the network uses a s
 | Spreading factor | **SF8** |
 | Coding rate | **4/8** (shown as `8` in the MeshCore apps) |
 | Occupied bandwidth | ≈ 434.85875 – 434.92125 MHz (never above 435.000 MHz) |
-| TX power | MeshCore default 22 dBm (≈ 158 mW) for testing; RFC maximum **2 W** conducted at fixed sites (see [Section 9](#9-power-proposal)) |
+| TX power | MeshCore default 22 dBm (≈ 158 mW) for testing; at fixed sites, the least power that gives reliable coverage — on the order of **1–2 W** typical, more or less depending on site and terrain (advisory, not a cap — see [Section 9](#9-power-proposal)) |
 | Channel / key | Default **public** MeshCore channel with its published shared key — do **not** configure private/secret keys (no encryption for amateur traffic — see [Section 11](#11-technical-requirements-for-participating-repeaters)) |
 
 This is a deliberately long-range, low-rate, narrow profile (see the bandwidth trade-off in [Section 3.5](#35-signal-bandwidth-and-the-625-khz-choice)), which suits a messaging and emergency-fallback layer and keeps the spectrum footprint small.
@@ -152,7 +154,7 @@ This is a deliberately long-range, low-rate, narrow profile (see the bandwidth t
 
 The 434.890 MHz channel sits in the 434.790–435.000 MHz window. Two neighbours matter, and both are handled explicitly:
 
-- **The amateur-satellite segment, 435.000–438.000 MHz**, begins ≈ 78.75 kHz above the channel's upper edge (434.92125 MHz). Satellite reception is weak-signal and internationally coordinated, so the RFC mandates a hard limit — **no emission above 435.000 MHz** — plus lowest-necessary power and clean, non-overdriven transmitters (see [Section 5](#5-proposed-frequency-and-on-air-mode) and [Section 9](#9-power-proposal)). LoRa's 62.5 kHz occupied bandwidth and low power spectral density help keep energy off the edge; the **434.875 MHz fallback** in [Section 12](#12-proposed-initial-frequency-plan) raises the satellite guard to ≈ 93.75 kHz if a satellite coordinator objects.
+- **The amateur-satellite segment, 435.000–438.000 MHz**, begins ≈ 78.75 kHz above the channel's upper edge (434.92125 MHz). Satellite reception is weak-signal and internationally coordinated, so the RFC mandates a hard limit — **no emission above 435.000 MHz** — plus lowest-necessary power and clean transmitters with adequate output/harmonic filtering (see [Section 5](#5-proposed-frequency-and-on-air-mode) and [Section 9](#9-power-proposal)). LoRa's 62.5 kHz occupied bandwidth and low power spectral density help keep energy off the edge; the **434.875 MHz fallback** in [Section 12](#12-proposed-initial-frequency-plan) raises the satellite guard to ≈ 93.75 kHz if a satellite coordinator objects.
 - **Legacy 1.6 / 2 MHz-shift "RU" repeater outputs, 434.600–434.9875 MHz.** In most of Region 1 this block is defunct (modern repeaters use the 7.6 MHz-shift system with outputs at 438.65–439.425 MHz), and Germany has re-designated its top (434.800–435.000 MHz) to digital / automatic-station use. **But it is not universally empty:** live repeaters are known to occupy 434.900 MHz in **Finland (OH3RUX, 50 W)** and **Norway (LA5YR)**. The channel therefore must **not** be deployed there until locally re-coordinated — see the per-country checklist in [Section 13](#13-coordination-proposal).
 
 This proposal therefore aims to avoid:
@@ -205,13 +207,13 @@ For these reasons, this RFC proposes that ham-only infrastructure should be move
 
 ## 9. Power proposal
 
-The proposed RF power policy is intentionally conservative. LoRa is a high-sensitivity, low-data-rate mode: coverage comes from siting, antenna height, and network density far more than from raw transmitter power.
+The RF power guidance here is intentionally conservative and **advisory** — a recommendation, not a hard cap. LoRa is a high-sensitivity, low-data-rate mode: coverage comes from siting, antenna height, and network density far more than from raw transmitter power.
 
-### 9.1 Normal recommended output power
+### 9.1 Recommended output power (guidance, not a limit)
 
-> **1-2 W conducted RF output** at the repeater module.
+> A sensible starting point is on the order of **1–2 W conducted RF output** at the node.
 
-This should be sufficient for most fixed MeshCore repeater sites when combined with:
+This is guidance, not a fixed ceiling. Because LoRa coverage comes from siting, antenna height and network density far more than from raw power, most fixed nodes will need no more than this — and a co-located node often far less (see [Section 11.1](#111-co-siting-at-existing-repeater-sites)) — when combined with:
 
 - a good antenna location;
 - reasonable antenna gain;
@@ -220,13 +222,15 @@ This should be sufficient for most fixed MeshCore repeater sites when combined w
 - proper receiver sensitivity;
 - careful site selection.
 
-For LoRa-style signals, coverage is often improved more effectively by antenna height, siting, and network density than by simply increasing transmitter power.
+For LoRa-style signals, coverage is improved far more effectively by antenna height, siting, and network density than by simply increasing transmitter power.
 
-### 9.2 Maximum conducted output power
+### 9.2 Power is site-dependent, not centrally fixed
 
-> **2 W conducted RF output maximum**, only where technically justified.
+Rather than a single hard number, output power should track the site. Terrain, antenna height, node density and the resulting EIRP all vary widely, so one node may work well at 0.5 W while another genuinely needs several watts on a difficult link. Coordination fixes the _frequency_ and keeps the relaying nodes registered; it does not dictate a one-size-fits-all output. The guiding rule is simply:
 
-The 2 W value should be treated as an upper limit, not as the normal target. It may be useful for difficult links, lower antenna sites, or specific coordinated backbone paths, but should not be the default for every installation.
+> **Use as little power as possible, and as much as needed.**
+
+Two situations still call for restraint on their own merits, and are handled elsewhere: keeping well clear of the 435.000 MHz satellite edge ([Section 5](#5-proposed-frequency-and-on-air-mode)), and co-siting at an existing repeater, where far less than 1 W is frequently the right choice ([Section 11.1](#111-co-siting-at-existing-repeater-sites)).
 
 ### 9.3 ERP/EIRP consideration
 
@@ -261,7 +265,7 @@ Key consequences:
 1. **A personal amateur licence is not sufficient.** A personal amateur licence (e.g. HAREC) authorises _you_ to operate a station under your direct control. It does not, on its own, authorise an unattended automatic relay. Every fixed MeshCore repeater/relay node therefore requires a separate **unmanned-station / repeater authorisation** from the national regulator (in Belgium, BIPT/IBPT) before it may operate.
 2. **The mesh is single-frequency and mesh-based.** Because MeshCore is mesh-based, every relaying node receives and re-transmits on the _same_ coordinated frequency; there is no separate input/output pair as on an FM repeater. All licensed nodes share one channel — see [Section 3](#3-how-lora-and-meshcore-work-on-the-air).
 3. **Register every licensed node.** Each authorised unmanned node and its responsible operator should be registered nationally, so the node list stays coordinated — see [Section 13](#13-coordination-proposal).
-4. **Attended portable/handheld nodes** operated under the direct control of a licensed amateur are not unmanned stations and fall under the normal personal licence. However, a portable node configured to relay automatically takes on repeater behaviour and should be treated accordingly.
+4. **Portable/handheld nodes — what matters is whether the node relays, not whether it is attended.** Run purely as an attended _endpoint_ (a client that only originates and receives your own traffic) under your direct control, a node sits under your normal personal licence. But MeshCore nodes relay by default: the moment a node forwards other stations' traffic it becomes part of the shared relay fabric — multiplying packets across the mesh (see [Section 3.4](#34-what-a-meshcore-repeater-actually-is)) — and an uncoordinated relay adds hops and collisions that degrade the channel for everyone. A relaying node therefore carries the same coordination and registration expectations as any other relay ([Section 13](#13-coordination-proposal)), attended or not; and where it is left to relay automatically without an operator present it is _additionally_ an unmanned station requiring the authorisation in point 1. In short: a portable node should be run either in a non-relaying client mode, or coordinated as a relay — being hand-held does not exempt it.
 
 This requirement is a feature, not a burden: routing MeshCore traffic through properly licensed unmanned stations on a coordinated amateur frequency is exactly what keeps the network inside the amateur service and out of the ISM "ham trap".
 
@@ -275,8 +279,8 @@ Participating fixed repeater or backbone nodes should meet the following minimum
 2. Operation on the coordinated frequency or frequency set.
 3. Callsign identification according to amateur-radio requirements.
 4. No encryption for amateur-radio traffic.
-5. Clean transmitter spectrum.
-6. No overdriven RF power stages.
+5. Clean transmitted spectrum — from a clean modulation source and adequate output filtering.
+6. CE-compliant harmonics. Note that LoRa is a **constant-envelope** mode, so the PA does _not_ need backing off for spectral cleanliness and may be run efficiently (even into compression) — cleanliness comes from the signal source and output/harmonic filtering, not from PA back-off (see [Section 11.1](#111-co-siting-at-existing-repeater-sites)).
 7. Suitable filtering where needed.
 8. Stable frequency reference appropriate for the modulation used.
 9. Documented antenna, power, location, and responsible operator.
@@ -288,7 +292,7 @@ Participating fixed repeater or backbone nodes should meet the following minimum
 
 Where a MeshCore node is installed on the same mast or site as an existing repeater, the node's transmitter can degrade the repeater's receiver (and, less often, the reverse). Coordinating the frequency and site is the first line of defence — a node should not be co-sited with a repeater whose receive frequency is close to the node channel (see the offset table below) — but at a shared site additional filtering is usually still needed. Two **distinct** mechanisms are involved, and they need **different** fixes:
 
-1. **Transmitter noise falling in the repeater's passband.** Every transmitter emits low-level wideband noise on either side of its carrier. Any of that noise landing on the repeater's _receive_ frequency is indistinguishable from a wanted signal there and **cannot be removed by any filter at the repeater**. It must be cleaned at the source — with a band-pass cavity / filter on the MeshCore transmitter output, and by using a clean PA that is not overdriven. This is why transmitter cleanliness matters more than raw power.
+1. **Transmitter noise falling in the repeater's passband.** Every transmitter emits low-level wideband noise on either side of its carrier. Any of that noise landing on the repeater's _receive_ frequency is indistinguishable from a wanted signal there and **cannot be removed by any filter at the repeater**. It must be cleaned at the source — with a band-pass cavity / filter on the MeshCore transmitter output, and by starting from a clean modulation source. (Because LoRa is constant-envelope, this noise comes from the signal source and its filtering, not from driving the PA into compression — backing the amplifier off does not fix it, so treat the source and filter the output rather than de-rating a clean PA.) This is why transmitter cleanliness matters more than raw power.
 2. **Receiver blocking / desensitisation.** The strong nearby MeshCore _carrier_ itself (off the repeater's frequency) can overload the repeater's front-end and raise its noise floor. This is what a **band-reject (notch) filter or a band-pass preselector at the repeater's receive input** can reduce — provided there is enough frequency separation for the filter's skirts.
 
 A notch filter in the repeater's RX chain therefore addresses **mechanism 2 only**. It is a useful and often necessary component, but on its own it is **not a complete answer**, because it does nothing about mechanism 1 (you cannot notch out energy sitting on your own wanted frequency). The robust approach is layered, roughly in order of effectiveness and cost:
@@ -297,7 +301,7 @@ A notch filter in the repeater's RX chain therefore addresses **mechanism 2 only
 - a **band-pass filter / cavity on the MeshCore transmitter output** — kills transmitter wideband noise in the repeater's receive passband (mechanism 1);
 - a **band-pass preselector on the repeater receiver** — rejects the off-channel MeshCore carrier and other on-site signals broadly (mechanism 2);
 - a **notch tuned to the MeshCore channel** — a targeted supplement to the preselector when one specific carrier dominates;
-- the node's inherently **low power (1–2 W) and low duty cycle**, which already limit the severity.
+- the node's inherently **low power (1–2 W) and bursty, infrequent traffic**, which already limit the severity.
 
 The further the MeshCore channel sits from the co-located repeater's input, the wider the filter skirts can be and the cheaper every one of these measures becomes. Each co-located installation should document its co-siting arrangement (antenna separation, TX filtering, RX filtering) alongside the technical parameters required in [Section 9.3](#93-erpeirp-consideration) and the list above.
 
@@ -466,8 +470,8 @@ Feedback is requested on the following points:
 1. Is 434.890 MHz acceptable as a Region-1-wide ham-only MeshCore / LoRa centre frequency (with 434.875 MHz as the satellite-conservative fallback)?
 2. Should IARU R1 be asked to designate 434.790–435.000 MHz (German DARC style) as a networked-digital / automatic-station segment, which would make the 62.5 kHz channel fully conformant and clear the legacy repeater-output designation?
 3. Are there national conflicts at 434.890 MHz beyond the known Finnish (OH3RUX) and Norwegian (LA5YR) repeaters on 434.900 MHz, and does your administration permit an automatic station there?
-4. Should the normal recommended conducted RF output be 1 W, 2 W, or another value?
-5. Is 2 W conducted RF output acceptable as an upper technical limit?
+4. Is advisory, site-dependent power guidance — "use the least power that gives reliable coverage" (typically ~1–2 W, but more or less by site and terrain), with no fixed cap — the right approach, or should a firmer ceiling be set?
+5. Should the RFC stay silent on duty cycle (relying on the protocol's politeness and self-limiting congestion), as now proposed, or is explicit duty-cycle guidance wanted?
 6. Should ERP/EIRP limits be defined more explicitly?
 7. Should mobile/portable nodes use the same frequency or a separate access frequency?
 8. Should fixed repeater/backbone nodes be registered through each national society / unmanned-station coordinator?
@@ -482,8 +486,7 @@ The proposed starting point is:
 
 - **434.890 MHz** centre frequency (Region-1 scope), with **434.875 MHz** as a satellite-conservative fallback; **no emission above 435.000 MHz**
 - **62.5 kHz** bandwidth, **SF8**, **CR 4/8** — MeshCore Europe stock profile, retuned to 434.890 MHz (see [Section 5.1](#51-on-air-radio-settings-the-testable-mode))
-- **1–2 W** conducted RF output recommended
-- **2 W** conducted RF output maximum when justified
+- **Advisory, site-dependent power** — use the least power that gives reliable coverage (on the order of 1–2 W typical, more or less by site and terrain); no fixed cap, and no imposed duty-cycle limit
 - Ham-only use
 - No encryption
 - Callsign identification required
@@ -511,6 +514,8 @@ This approach gives radio amateurs across Region 1 a coordinated, technically de
   <https://shop.rf.guru/pages/meshtastic-meshcore-and-the-legal-framework>
 - **RF.Guru technical note: "Meshtastic, MeshCore, CE Marking, and the Hardware Trap"** — CE/RED compliance of consumer LoRa hardware vs amateur use
   <https://shop.rf.guru/pages/meshtastic-meshcore-ce-marking-and-the-hardware-trap>
+- **RF.Guru note: "The Tragedy of the Commons"** — William Forster Lloyd's shared-resource dilemma applied to an uncoordinated shared radio channel
+  <https://shop.rf.guru/pages/tragedy-of-the-commons>
 - **IARU Region 1 VHF/UHF/Microwaves Committee (C5) and VHF Managers Handbook**
   <https://www.iaru-r1.org/about-us/committees-and-working-groups/vhf-uhf-shf-committee-c5/>
   Handbook v10.02 (Nov 2024): <https://www.iaru-r1.org/wp-content/uploads/2024/11/VHF_Handbook_V10_02.pdf>
